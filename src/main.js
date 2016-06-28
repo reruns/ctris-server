@@ -18,23 +18,25 @@ const db_config = {
 var pool = new pg.Pool(db_config);
 
 //Business code.
-app.get('/score/:id', (req, res) => {});
-app.post('/score', (req,res) => {
-  pool.connect((err, client, done) => {
-    if (err) {
-      return console.error('error fetching client from pool.');
-    }
-    const {score, time, initials, grade} = req.body;
-    client.query('INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)'
-                 ,[score, time, initials, grade], (err, result) => {
-      done();
-      console.log(err);
-      console.log(result);
-    });
-  })
+app.post('/', (req,res) => {
+  const {score, time, initials, grade} = req.body;
+  pool.query('INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)'
+               ,[score, time, initials, grade], (err, result) => {
+    console.log(err);
+    console.log(result);
+  });
 });
 
-app.get('/scores', (req, res) => {});
+app.get('/', (req, res) => {
+  pool.query("(SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade = 'GM' ORDER BY time) UNION ALL (SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade != 'GM' ORDER BY score DESC)",
+  (err, result) => {
+    if(err) {
+      console.log(err)
+    } else {
+      res.json({list: result.rows})
+    }
+  });
+});
 
 app.listen(3111, function () {
   console.log('Example app listening on port 3111!');

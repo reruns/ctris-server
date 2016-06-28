@@ -20,27 +20,28 @@ var db_config = {
 var pool = new pg.Pool(db_config);
 
 //Business code.
-app.get('/score/:id', function (req, res) {});
-app.post('/score', function (req, res) {
-  pool.connect(function (err, client, done) {
-    if (err) {
-      return console.error('error fetching client from pool.');
-    }
-    var _req$body = req.body;
-    var score = _req$body.score;
-    var time = _req$body.time;
-    var initials = _req$body.initials;
-    var grade = _req$body.grade;
+app.post('/', function (req, res) {
+  var _req$body = req.body;
+  var score = _req$body.score;
+  var time = _req$body.time;
+  var initials = _req$body.initials;
+  var grade = _req$body.grade;
 
-    client.query('INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)', [score, time, initials, grade], function (err, result) {
-      done();
-      console.log(err);
-      console.log(result);
-    });
+  pool.query('INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)', [score, time, initials, grade], function (err, result) {
+    console.log(err);
+    console.log(result);
   });
 });
 
-app.get('/scores', function (req, res) {});
+app.get('/', function (req, res) {
+  pool.query("(SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade = 'GM' ORDER BY time) UNION ALL (SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade != 'GM' ORDER BY score DESC)", function (err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ list: result.rows });
+    }
+  });
+});
 
 app.listen(3111, function () {
   console.log('Example app listening on port 3111!');
