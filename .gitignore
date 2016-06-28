@@ -1,3 +1,4 @@
 *.txt
 *.env
+gulpfile.js
 node_modules/
