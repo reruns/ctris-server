@@ -45,6 +45,6 @@ app.get('/', function (req, res) {
   });
 });
 
-app.listen(3111, function () {
-  console.log('Leaderboards running on port 3111!');
+app.listen(process.env.PORT || 3111, function () {
+  console.log('Leaderboards active!');
 });
