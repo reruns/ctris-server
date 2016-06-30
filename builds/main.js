@@ -1,6 +1,8 @@
 'use strict';
 
-require('dotenv').config();
+if (process.env.NODE_ENV == "dev") {
+  require('dotenv').config();
+}
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
