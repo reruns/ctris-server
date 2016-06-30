@@ -1,13 +1,12 @@
 {
   "name": "ctris-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Leaderboards server for CTris",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./builds/main.js"
   },
-  "author": "",
+  "author": "Garrett Johnson",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.9.1",
