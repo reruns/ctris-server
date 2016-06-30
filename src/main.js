@@ -30,11 +30,14 @@ app.post('/', (req,res) => {
 });
 
 app.get('/', (req, res) => {
+  console.log('get received.')
   pool.query("(SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade = 'GM' ORDER BY time) UNION ALL (SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade != 'GM' ORDER BY score DESC)",
   (err, result) => {
+    console.log('processing query.');
     if(err) {
       console.log(err)
     } else {
+      console.log('responding...');
       res.json({list: result.rows})
     }
   });
