@@ -8,6 +8,8 @@ app.use(bodyParser.json());
 //pg setup
 const pg = require('pg');
 const db_config = {
+  host: process.env.DATABASE_URL,
+  ssl: process.env.USE_SSL,
   port: process.env.PGPORT,
   database: process.env.PGDATABASE,
   user: process.env.PGUSER,
@@ -39,5 +41,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(3111, function () {
-  console.log('Example app listening on port 3111!');
+  console.log('Leaderboards running on port 3111!');
 });
