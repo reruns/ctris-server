@@ -50,6 +50,14 @@ app.get('/', function (req, res) {
   });
 });
 
+app.get('/test', function (req, res) {
+  console.log('test!');
+  console.log(pool);
+  pool.query("SELECT * FROM runs", function (err, result) {
+    console.log("queried.");
+  });
+});
+
 app.listen(process.env.PORT || 3111, function () {
   console.log('Leaderboards active!');
 });

@@ -43,6 +43,14 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/test',(req, res) => {
+  console.log('test!');
+  console.log(pool);
+  pool.query("SELECT * FROM runs", (err, result) => {
+    console.log("queried.")
+  })
+})
+
 app.listen(process.env.PORT || 3111, function () {
   console.log('Leaderboards active!');
 });
