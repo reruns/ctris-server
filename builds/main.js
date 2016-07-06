@@ -16,7 +16,7 @@ app.post('/', function (req, res) {
     var updated = [];
     if (!!gs) {
       //let games = JSON.parse(gs.toString())
-      console.log(js.toString());
+      console.log("HERE:" + gs.toString());
       var games = [];
       while (games.length > 0) {
         var g = games.pop();
