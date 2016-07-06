@@ -12,12 +12,10 @@ var cache = memjs.Client.create();
 //Business code.
 app.post('/', function (req, res) {
   var game = req.body;
-  console.log(game);
-  cache.get('games', function (err, games) {
+  cache.get('games', function (err, gs) {
     var updated = [];
-    console.log(games);
+    var games = JSON.parse(gs.toString());
     if (!!games && games !== []) {
-      console.log("hm");
       while (games.length > 0) {
         var g = games.pop();
         if (compareGame(game, g)) {
@@ -32,7 +30,7 @@ app.post('/', function (req, res) {
       //cache has no values yet.
       updated = [game];
     }
-    cache.set('games', updated, function (err) {
+    cache.set('games', JSON.stringify(updated), function (err) {
       if (err) {
         res.json({ error: "Could not submit game." });
       } else {
@@ -67,7 +65,7 @@ function compareGame(g1, g2) {
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
     if (result) {
-      res.json(result);
+      res.json(JSON.parse(result.toString()));
     } else {
       res.json({ error: "Error getting scores." });
     }
