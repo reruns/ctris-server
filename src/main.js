@@ -55,7 +55,7 @@ function compareGame(g1, g2) {
 app.get('/', (req, res) => {
   cache.get('games', (err, result) => {
     if (!!result && !err) {
-      res.json({"out": JSON.parse(result.toString())})
+      res.json({"out": result})
     } else {
       res.json({error: "Error getting scores."})
     }
