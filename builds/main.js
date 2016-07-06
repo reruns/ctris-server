@@ -12,6 +12,7 @@ var cache = memjs.Client.create();
 //Business code.
 app.post('/', function (req, res) {
   var game = req.body;
+  console.log(game);
   cache.get('games', function (err, games) {
     var updated = [];
     if (!!games) {
@@ -58,7 +59,6 @@ function compareGame(g1, g2) {
 
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
-    console.log(result);
     if (result) {
       res.json(result);
     } else {

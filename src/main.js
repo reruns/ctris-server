@@ -10,6 +10,7 @@ const cache = memjs.Client.create()
 //Business code.
 app.post('/', (req,res) => {
   const game = req.body
+  console.log(game)
   cache.get('games', (err, games) => {
     let updated = []
     if (!!games) {
