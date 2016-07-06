@@ -36,7 +36,7 @@ app.post('/', (req,res) => {
 });
 
 app.get('/reset', (req, res) => {
-  cache.set('games',{list: []}, (err) => {});
+  cache.set('games',[], (err) => {});
   res.json({status: 'reset'})
 });
 
