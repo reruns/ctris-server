@@ -1,60 +1,69 @@
 'use strict';
 
-if (process.env.NODE_ENV == "dev") {
-  require('dotenv').config();
-}
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-
 app.use(bodyParser.json());
 
-//pg setup
-var pg = require('pg');
-var db_config = {
-  host: process.env.DATABASE_URL,
-  ssl: process.env.USE_SSL,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  max: 10,
-  idleTimeoutMillis: 30000
-};
-var pool = new pg.Pool(db_config);
+//This is a bit of a nonstandard use of memcache
+var memjs = require('memjs');
+var cache = memjs.Client.create();
 
 //Business code.
 app.post('/', function (req, res) {
-  var _req$body = req.body;
-  var score = _req$body.score;
-  var time = _req$body.time;
-  var initials = _req$body.initials;
-  var grade = _req$body.grade;
-
-  pool.query('INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)', [score, time, initials, grade], function (err, result) {
-    console.log(err);
-    console.log(result);
+  var game = req.body;
+  cache.get('games', function (err, games) {
+    var updated = [];
+    if (!!games) {
+      while (games.length > 0) {
+        var g = games.pop();
+        if (compareGame(game, g)) {
+          updated.unshift(g);
+        } else {
+          updated = updated.concat(games);
+          games = [];
+        }
+      }
+      updated = updated.slice(0, 10);
+    } else {
+      //cache has no values yet.
+      updated = [game];
+    }
+    cache.set('games', updated, function (err) {
+      if (err) {
+        res.json({ error: "Could not submit game." });
+      } else {
+        res.json({ error: "none" });
+      }
+    });
   });
 });
+
+function compareGame(g1, g2) {
+  //Check grades first.
+  if (g1.grade === "GM") {
+    if (g2.grade === "GM") {
+      //if both are GM, we compare times.
+      return g1.time <= g2.time;
+    } else return true;
+  } else if (g2.grade === "GM") {
+    return false;
+  }
+
+  //If neither is GM, we just compare scores, but use time as a tiebreaker
+  if (g1.score === g2.score) {
+    return g1.time < g2.time;
+  } else return g1.score < g2.score;
+}
 
 app.get('/', function (req, res) {
-  console.log('get received.');
-  pool.query("(SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade = 'GM' ORDER BY time) UNION ALL (SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade != 'GM' ORDER BY score DESC)", function (err, result) {
-    console.log('processing query.');
-    if (err) {
-      console.log(err);
+  cache.get('games', function (err, result) {
+    console.log(result);
+    if (result) {
+      res.json(result);
     } else {
-      console.log('responding...');
-      res.json({ list: result.rows });
+      res.json({ error: "Error getting scores." });
     }
-  });
-});
-
-app.get('/test', function (req, res) {
-  console.log('test!');
-  console.log(pool);
-  pool.query("SELECT * FROM runs", function (err, result) {
-    console.log("queried.");
   });
 });
 

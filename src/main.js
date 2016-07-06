@@ -1,18 +1,64 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-
 app.use(bodyParser.json());
+
+//This is a bit of a nonstandard use of memcache
+const memjs = require('memjs')
+const cache = memjs.Client.create()
 
 //Business code.
 app.post('/', (req,res) => {
-  const {score, time, initials, grade} = req.body;
-  //'INSERT INTO runs(score,time,initials,grade) VALUES($1,$2,$3,$4)',[score, time, initials, grade]
+  const game = req.body
+  cache.get('games', (err, games) => {
+    let updated = []
+    if (!!games) {
+      while (games.length > 0) {
+        let g = games.pop()
+        if (compareGame(game, g)) {
+          updated.unshift(g)
+        } else {
+           updated = updated.concat(games)
+           games = []
+        }
+      }
+      updated = updated.slice(0,10)
+    } else {
+      //cache has no values yet.
+      updated = [game]
+    }
+    cache.set('games',updated, function(err) {
+      if (err) {res.json({error: "Could not submit game."})}
+      else {res.json({error:"none"})}
+    });
+  })
 });
 
+function compareGame(g1, g2) {
+  //Check grades first.
+  if (g1.grade === "GM") {
+    if (g2.grade === "GM") {
+      //if both are GM, we compare times.
+      return (g1.time <= g2.time)
+    } else return true
+  } else if (g2.grade === "GM") {
+    return false
+  }
+
+  //If neither is GM, we just compare scores, but use time as a tiebreaker
+  if (g1.score === g2.score) {
+    return (g1.time < g2.time)
+  } else return (g1.score < g2.score)
+}
+
 app.get('/', (req, res) => {
-  //"(SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade = 'GM' ORDER BY time) UNION ALL (SELECT initials, TO_CHAR(time, 'MI:SS.MS'), score, grade FROM runs WHERE grade != 'GM' ORDER BY score DESC)",
-  res.json({list: result})
+  cache.get('games', (err, result) => {
+    if (result) {
+      res.json(result)
+    } else {
+      res.json({error: "Error getting scores."})
+    }
+  })
 });
 
 app.listen(process.env.PORT || 3111, function () {
