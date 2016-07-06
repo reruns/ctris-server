@@ -37,6 +37,7 @@ app.post('/', (req,res) => {
 
 app.post('/reset', (req, res) => {
   cache.set('games',{list: []}, (err) => {});
+  res.json({status: 'reset'})
 });
 
 function compareGame(g1, g2) {

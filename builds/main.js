@@ -30,7 +30,7 @@ app.post('/', function (req, res) {
       //cache has no values yet.
       updated = [game];
     }
-    cache.set('games', updated, function (err) {
+    cache.set('games', { list: updated }, function (err) {
       if (err) {
         res.json({ error: "Could not submit game." });
       } else {
@@ -38,6 +38,11 @@ app.post('/', function (req, res) {
       }
     });
   });
+});
+
+app.post('/reset', function (req, res) {
+  cache.set('games', { list: [] }, function (err) {});
+  res.json({ status: 'reset' });
 });
 
 function compareGame(g1, g2) {
@@ -60,7 +65,7 @@ function compareGame(g1, g2) {
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
     if (result) {
-      res.json(result);
+      res.json(result.list);
     } else {
       res.json({ error: "Error getting scores." });
     }
