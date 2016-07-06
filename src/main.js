@@ -14,13 +14,14 @@ app.post('/', (req,res) => {
   cache.get('games', (err, games) => {
     let updated = []
     if (!!games) {
-      while (games.length > 0) {
-        let g = games.pop()
+      glist = games.list
+      while (glist.length > 0) {
+        let g = glist.pop()
         if (compareGame(game, g)) {
           updated.unshift(g)
         } else {
-           updated = updated.concat(games)
-           games = []
+           updated = updated.concat(glist)
+           glist = []
         }
       }
       updated = updated.slice(0,10)
