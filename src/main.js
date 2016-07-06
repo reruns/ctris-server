@@ -13,7 +13,7 @@ app.post('/', (req,res) => {
   console.log(game)
   cache.get('games', (err, games) => {
     let updated = []
-    if (!!games && games.length !== []) {
+    if (!!games && games !== []) {
       while (games.length > 0) {
         let g = games.pop()
         if (compareGame(game, g)) {
