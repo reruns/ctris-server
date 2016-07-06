@@ -60,6 +60,7 @@ function compareGame(g1, g2) {
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
     console.log(result);
+    console.log(result.toString());
     if (!!result && !err) {
       res.json(JSON.parse(result.toString()));
     } else {
