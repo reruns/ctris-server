@@ -14,14 +14,13 @@ app.post('/', (req,res) => {
   cache.get('games', (err, games) => {
     let updated = []
     if (!!games) {
-      glist = games.list
-      while (glist.length > 0) {
-        let g = glist.pop()
+      while (games.length > 0) {
+        let g = games.pop()
         if (compareGame(game, g)) {
           updated.unshift(g)
         } else {
-           updated = updated.concat(glist)
-           glist = []
+           updated = updated.concat(games)
+           games = []
         }
       }
       updated = updated.slice(0,10)
@@ -29,7 +28,7 @@ app.post('/', (req,res) => {
       //cache has no values yet.
       updated = [game]
     }
-    cache.set('games',{list: updated}, (err) => {
+    cache.set('games',updated, (err) => {
       if (err) {res.json({error: "Could not submit game."})}
       else {res.json({error:"none"})}
     });
@@ -61,7 +60,7 @@ function compareGame(g1, g2) {
 app.get('/', (req, res) => {
   cache.get('games', (err, result) => {
     if (result) {
-      res.json(result.list)
+      res.json(result)
     } else {
       res.json({error: "Error getting scores."})
     }

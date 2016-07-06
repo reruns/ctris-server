@@ -30,7 +30,7 @@ app.post('/', function (req, res) {
       //cache has no values yet.
       updated = [game];
     }
-    cache.set('games', { list: updated }, function (err) {
+    cache.set('games', updated, function (err) {
       if (err) {
         res.json({ error: "Could not submit game." });
       } else {
@@ -65,7 +65,7 @@ function compareGame(g1, g2) {
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
     if (result) {
-      res.json(result.list);
+      res.json(result);
     } else {
       res.json({ error: "Error getting scores." });
     }
