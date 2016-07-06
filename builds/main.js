@@ -14,8 +14,8 @@ app.post('/', function (req, res) {
   var game = req.body;
   cache.get('games', function (err, gs) {
     var updated = [];
-    var games = JSON.parse(gs.toString());
-    if (!!games && games !== []) {
+    if (!!gs) {
+      var games = JSON.parse(gs.toString());
       while (games.length > 0) {
         var g = games.pop();
         if (compareGame(game, g)) {
@@ -40,11 +40,6 @@ app.post('/', function (req, res) {
   });
 });
 
-app.get('/reset', function (req, res) {
-  cache.set('games', [], function (err) {});
-  res.json({ status: 'reset' });
-});
-
 function compareGame(g1, g2) {
   //Check grades first.
   if (g1.grade === "GM") {
@@ -64,7 +59,7 @@ function compareGame(g1, g2) {
 
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
-    if (result) {
+    if (!!result) {
       res.json(JSON.parse(result.toString()));
     } else {
       res.json({ error: "Error getting scores." });
