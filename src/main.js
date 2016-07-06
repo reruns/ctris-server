@@ -12,10 +12,9 @@ app.post('/', (req,res) => {
   const game = req.body
   cache.get('games', (err, gs) => {
     let updated = []
-    if (!!gs) {
-      //let games = JSON.parse(gs.toString())
-      console.log("HERE:" + gs.toString());
-      let games = []
+    if (!!gs && gs.toString() && gs.toString() !== "[]") {
+      let games = JSON.parse(gs.toString())
+      games = games || []
       while (games.length > 0) {
         let g = games.pop()
         if (compareGame(game, g)) {
@@ -57,7 +56,7 @@ function compareGame(g1, g2) {
 app.get('/', (req, res) => {
   cache.get('games', (err, result) => {
     if (!!result && !err) {
-      res.json({"out": result.toString()})
+      res.json({"games": result.toString()})
     } else {
       res.json({error: "Error getting scores."})
     }
