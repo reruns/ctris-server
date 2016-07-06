@@ -15,7 +15,9 @@ app.post('/', function (req, res) {
   cache.get('games', function (err, gs) {
     var updated = [];
     if (!!gs) {
-      var games = JSON.parse(gs.toString());
+      //let games = JSON.parse(gs.toString())
+      console.log(js.toString());
+      var games = [];
       while (games.length > 0) {
         var g = games.pop();
         if (compareGame(game, g)) {
@@ -60,7 +62,7 @@ function compareGame(g1, g2) {
 app.get('/', function (req, res) {
   cache.get('games', function (err, result) {
     if (!!result && !err) {
-      res.json({ "out": result });
+      res.json({ "out": result.toString() });
     } else {
       res.json({ error: "Error getting scores." });
     }
