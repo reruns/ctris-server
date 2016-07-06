@@ -40,7 +40,7 @@ app.post('/', function (req, res) {
   });
 });
 
-app.post('/reset', function (req, res) {
+app.get('/reset', function (req, res) {
   cache.set('games', { list: [] }, function (err) {});
   res.json({ status: 'reset' });
 });
