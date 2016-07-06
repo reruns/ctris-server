@@ -15,7 +15,9 @@ app.post('/', function (req, res) {
   console.log(game);
   cache.get('games', function (err, games) {
     var updated = [];
+    console.log(games);
     if (!!games && games !== []) {
+      console.log("hm");
       while (games.length > 0) {
         var g = games.pop();
         if (compareGame(game, g)) {
