@@ -16,9 +16,7 @@ app.post('/', function (req, res) {
     var updated = [];
     if (!!gs && gs.toString() && gs.toString() !== "[]") {
       var games = JSON.parse(gs.toString());
-      console.log(games);
       updated = games;
-      console.log(updated);
       updated.push(game);
       updated.sort(compareGame);
       updated = updated.slice(0, 10);
