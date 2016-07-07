@@ -12,11 +12,11 @@ app.post('/', (req,res) => {
   const game = req.body
   cache.get('games', (err, gs) => {
     let updated = []
-    console.log("here: "+gs.toString())
     if (!!gs && gs.toString() && gs.toString() !== "[]") {
       let games = JSON.parse(gs.toString())
       console.log(games)
-      updated = games.push(game).sort(compareGame)
+      updated = games.push(game)
+      updated.sort(compareGame)
       updated = updated.slice(0,10)
     } else {
       //cache has no values yet.
