@@ -12,6 +12,7 @@ app.post('/', (req,res) => {
   const game = req.body
   cache.get('games', (err, gs) => {
     let updated = []
+    console.log("here: "+gs.toString())
     if (!!gs && gs.toString() && gs.toString() !== "[]") {
       let games = JSON.parse(gs.toString())
       console.log(games)

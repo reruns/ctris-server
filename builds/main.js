@@ -14,6 +14,7 @@ app.post('/', function (req, res) {
   var game = req.body;
   cache.get('games', function (err, gs) {
     var updated = [];
+    console.log("here: " + gs.toString());
     if (!!gs && gs.toString() && gs.toString() !== "[]") {
       var games = JSON.parse(gs.toString());
       console.log(games);
