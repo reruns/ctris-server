@@ -16,6 +16,7 @@ app.post('/', (req,res) => {
       let games = JSON.parse(gs.toString())
       console.log(games)
       updated = games
+      console.log(updated)
       updated.push(game)
       updated.sort(compareGame)
       updated = updated.slice(0,10)
