@@ -14,16 +14,8 @@ app.post('/', (req,res) => {
     let updated = []
     if (!!gs && gs.toString() && gs.toString() !== "[]") {
       let games = JSON.parse(gs.toString())
-      games = games || []
-      while (games.length > 0) {
-        let g = games.pop()
-        if (compareGame(game, g)) {
-          updated.unshift(g)
-        } else {
-           updated = updated.concat(games)
-           games = []
-        }
-      }
+      console.log(games)
+      updated = games.push(game).sort(compareGame)
       updated = updated.slice(0,10)
     } else {
       //cache has no values yet.
@@ -42,9 +34,9 @@ function compareGame(g1, g2) {
     if (g2.grade === "GM") {
       //if both are GM, we compare times.
       return (g1.time <= g2.time)
-    } else return true
+    } else return -1
   } else if (g2.grade === "GM") {
-    return false
+    return 1
   }
 
   //If neither is GM, we just compare scores, but use time as a tiebreaker
