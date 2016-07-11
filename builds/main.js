@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 var corsOptions = {
-  origin: ["http://72.225.194.233", "http://www.garrettjohnson.net/ctris/"]
+  origin: "*" //["http://www.garrettjohnson.net/ctris/"]
 };
 //This is a bit of a nonstandard use of memcache
 var memjs = require('memjs');
