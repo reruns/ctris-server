@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 let corsOptions = {
-  origin : ["72.225.194.233","http://www.garrettjohnson.net/ctris/"]
+  origin : ["http://72.225.194.233","http://www.garrettjohnson.net/ctris/"]
 }
 //This is a bit of a nonstandard use of memcache
 const memjs = require('memjs')
