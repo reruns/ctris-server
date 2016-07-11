@@ -23,7 +23,7 @@ app.post('/', cors(corsOptions), function (req, res) {
       updated = games;
       updated.push(game);
       updated.sort(compareGame);
-      updated = updated.slice(0, 10);
+      updated = updated.slice(0, 22);
     } else {
       //cache has no values yet.
       updated = [game];
