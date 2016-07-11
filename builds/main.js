@@ -2,15 +2,19 @@
 
 var express = require('express');
 var app = express();
+var cors = require('cors');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+var corsOptions = {
+  origin: ["72.225.194.233", "http://www.garrettjohnson.net/ctris/"]
+};
 //This is a bit of a nonstandard use of memcache
 var memjs = require('memjs');
 var cache = memjs.Client.create();
 
 //Business code.
-app.post('/', function (req, res) {
+app.post('/', cors(corsoptions), function (req, res) {
   var game = req.body;
   cache.get('games', function (err, gs) {
     var updated = [];
@@ -51,7 +55,7 @@ function compareGame(g1, g2) {
   } else return g1.score < g2.score;
 }
 
-app.get('/', function (req, res) {
+app.get('/', cors(corsOptions), function (req, res) {
   cache.get('games', function (err, result) {
     if (!!result && !err) {
       res.json({ "games": result.toString() });
