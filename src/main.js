@@ -12,7 +12,7 @@ const memjs = require('memjs')
 const cache = memjs.Client.create()
 
 //Business code.
-app.post('/', cors(corsoptions), (req,res) => {
+app.post('/', cors(corsOptions), (req,res) => {
   const game = req.body
   cache.get('games', (err, gs) => {
     let updated = []
