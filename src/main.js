@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json({type: "*/*"}));
 
 let corsOptions = {
-  origin : "*"//["http://www.garrettjohnson.net/ctris/"]
+  origin : "http://www.garrettjohnson.net/ctris/"
 }
 //This is a bit of a nonstandard use of memcache
 const memjs = require('memjs')
@@ -14,7 +14,6 @@ const cache = memjs.Client.create()
 //Business code.
 app.post('/', cors(corsOptions), (req,res) => {
   const game = req.body
-  console.log(game)
   cache.get('games', (err, gs) => {
     if(err) {
       res.json({error: "Error getting scores."})
@@ -33,7 +32,6 @@ app.post('/', cors(corsOptions), (req,res) => {
       cache.set('games',JSON.stringify(updated), (err) => {
         if (err) {res.json({error: "Could not submit game."})}
         else {
-          console.log("Post successful?")
           res.json({"games": updated})
         }
       });
