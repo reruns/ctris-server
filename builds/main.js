@@ -36,7 +36,8 @@ app.post('/', cors(corsOptions), function (req, res) {
           if (err) {
             res.json({ error: "Could not submit game." });
           } else {
-            res.json({ "games": updated });
+            console.log("Post successful");
+            res.json({ "games": updated.toString() });
           }
         });
       })();

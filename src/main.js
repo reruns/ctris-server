@@ -31,7 +31,10 @@ app.post('/', cors(corsOptions), (req,res) => {
       }
       cache.set('games',JSON.stringify(updated), (err) => {
         if (err) {res.json({error: "Could not submit game."})}
-        else {res.json({"games": updated})}
+        else {
+          console.log("Post successful")
+          res.json({"games": updated.toString()})
+        }
       });
     }
   })
