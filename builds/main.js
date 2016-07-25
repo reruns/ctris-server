@@ -17,24 +17,30 @@ var cache = memjs.Client.create();
 app.post('/', cors(corsOptions), function (req, res) {
   var game = req.body;
   cache.get('games', function (err, gs) {
-    var updated = [];
-    if (!!gs && gs.toString() && gs.toString() !== "[]") {
-      var games = JSON.parse(gs.toString());
-      updated = games;
-      updated.push(game);
-      updated.sort(compareGame);
-      updated = updated.slice(0, 22);
+    if (err) {
+      res.json({ error: "Error getting scores." });
     } else {
-      //cache has no values yet.
-      updated = [game];
+      (function () {
+        var updated = [];
+        if (!!gs && gs.toString() && gs.toString() !== "[]") {
+          var games = JSON.parse(gs.toString());
+          updated = games;
+          updated.push(game);
+          updated.sort(compareGame);
+          updated = updated.slice(0, 22);
+        } else {
+          //cache has no values yet.
+          updated = [game];
+        }
+        cache.set('games', JSON.stringify(updated), function (err) {
+          if (err) {
+            res.json({ error: "Could not submit game." });
+          } else {
+            res.json({ "games": updated });
+          }
+        });
+      })();
     }
-    cache.set('games', JSON.stringify(updated), function (err) {
-      if (err) {
-        res.json({ error: "Could not submit game." });
-      } else {
-        res.json({ error: "none" });
-      }
-    });
   });
 });
 
