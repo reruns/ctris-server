@@ -16,6 +16,7 @@ var cache = memjs.Client.create();
 //Business code.
 app.post('/', cors(corsOptions), function (req, res) {
   var game = req.body;
+  console.log(game);
   cache.get('games', function (err, gs) {
     if (err) {
       res.json({ error: "Error getting scores." });
@@ -36,8 +37,8 @@ app.post('/', cors(corsOptions), function (req, res) {
           if (err) {
             res.json({ error: "Could not submit game." });
           } else {
-            console.log("Post successful");
-            res.json({ "games": updated.toString() });
+            console.log("Post successful?");
+            res.json({ "games": updated });
           }
         });
       })();
