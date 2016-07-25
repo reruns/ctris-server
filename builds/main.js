@@ -16,6 +16,7 @@ var cache = memjs.Client.create();
 //Business code.
 app.post('/', cors(corsOptions), function (req, res) {
   var game = req.body;
+  console.log(req);
   console.log(game);
   cache.get('games', function (err, gs) {
     if (err) {
