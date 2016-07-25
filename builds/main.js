@@ -4,7 +4,7 @@ var express = require('express');
 var app = express();
 var cors = require('cors');
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: "*/*" }));
 
 var corsOptions = {
   origin: "*" //["http://www.garrettjohnson.net/ctris/"]
@@ -16,7 +16,6 @@ var cache = memjs.Client.create();
 //Business code.
 app.post('/', cors(corsOptions), function (req, res) {
   var game = req.body;
-  console.log(req);
   console.log(game);
   cache.get('games', function (err, gs) {
     if (err) {
